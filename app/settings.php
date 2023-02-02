@@ -6,8 +6,11 @@ use App\Application\Settings\Settings;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Monolog\Logger;
+use Symfony\Component\Dotenv\Dotenv;
 
 return function (ContainerBuilder $containerBuilder) {
+    $dotenv = new Dotenv();
+    $dotenv->load('../.env');
 
     // Global Settings Object
     $containerBuilder->addDefinitions([
@@ -21,6 +24,13 @@ return function (ContainerBuilder $containerBuilder) {
                     'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
                     'level' => Logger::DEBUG,
                 ],
+                'db' => [
+                    'name' => $_ENV['DB_NAME'],
+                    'host' => $_ENV['DB_HOST'],
+                    'port' => $_ENV['FORWARD_DB_PORT'],
+                    'user' => $_ENV['DB_USER'],
+                    'password' => $_ENV['DB_PASSWORD']
+                ]
             ]);
         }
     ]);

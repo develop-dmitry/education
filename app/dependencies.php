@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Application\Backup\OperationBackupUseCase;
 use App\Application\Settings\SettingsInterface;
+use App\Domain\Operation\OperationBackup;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -10,7 +12,7 @@ use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-return function (ContainerBuilder $containerBuilder) {
+return static function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get(SettingsInterface::class);
@@ -26,5 +28,7 @@ return function (ContainerBuilder $containerBuilder) {
 
             return $logger;
         },
+
+        OperationBackup::class => DI\autowire(OperationBackupUseCase::class)
     ]);
 };
