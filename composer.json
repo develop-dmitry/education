@@ -25,14 +25,15 @@
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
         "ext-pdo": "*",
+        "ext-xmlreader": "*",
+        "ext-xmlwriter": "*",
         "doctrine/migrations": "^3.5",
         "monolog/monolog": "^2.8",
         "php-di/php-di": "^6.4",
+        "slim/php-view": "^3.2",
         "slim/psr7": "^1.5",
         "slim/slim": "^4.10",
-        "symfony/dotenv": "^6.2",
-        "ext-xmlwriter": "*",
-        "ext-xmlreader": "*"
+        "symfony/dotenv": "^6.2"
     },
     "require-dev": {
         "jangregor/phpstan-prophecy": "^1.0.0",

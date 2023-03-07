@@ -23,8 +23,10 @@ class Operation extends Entity
 
     public static function fromArray(array $params): self
     {
+        $id = (isset($params['id'])) ? (int) $params['id'] : null;
+
         return new self(
-            (int) $params['id'],
+            $id,
             (float) $params['amount'],
             new DateTime($params['transaction_date'])
         );
@@ -41,26 +43,32 @@ class Operation extends Entity
 
     /**
      * @param int|null $id
+     * @return Operation
      */
-    public function setId(?int $id): void
+    public function setId(?int $id): self
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
      * @param float $amount
+     * @return Operation
      */
-    public function setAmount(float $amount): void
+    public function setAmount(float $amount): self
     {
         $this->amount = $amount;
+        return $this;
     }
 
     /**
      * @param DateTime $transactionDate
+     * @return Operation
      */
-    public function setTransactionDate(DateTime $transactionDate): void
+    public function setTransactionDate(DateTime $transactionDate): self
     {
         $this->transactionDate = $transactionDate;
+        return $this;
     }
 
     /**

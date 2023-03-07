@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Repository\Operation;
 
 use App\Domain\Operation\Operation;
+use App\Domain\Operation\OperationNotDeletedException;
 use App\Domain\Operation\OperationNotFoundException;
 use App\Domain\Operation\OperationNotSavedException;
 use App\Domain\Operation\OperationRepository;
@@ -59,6 +60,17 @@ class OperationPostgresRepository extends PostgresRepository implements Operatio
         }
     }
 
+    public function delete(int $id): void
+    {
+        $query = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :primaryKey";
+
+        try {
+            $this->query($query, ['primaryKey' => $id]);
+        } catch (PDOException) {
+            throw new OperationNotDeletedException('Operation could not be deleted');
+        }
+    }
+
     protected function makeOperation(array $params): Operation
     {
         return Operation::fromArray($params);
@@ -69,7 +81,7 @@ class OperationPostgresRepository extends PostgresRepository implements Operatio
         $params = $operation->toArray();
 
         if (is_null($operation->getId())) {
-            unset($this->primaryKey);
+            unset($params[$this->primaryKey]);
         }
 
         $values = implode(',', array_map(static fn ($item) => ":$item", array_keys($params)));

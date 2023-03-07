@@ -20,4 +20,9 @@ interface OperationRepository
      * @throws OperationNotSavedException
      */
     public function save(Operation $operation): void;
+
+    /**
+     * @throws OperationNotDeletedException
+     */
+    public function delete(int $id): void;
 }

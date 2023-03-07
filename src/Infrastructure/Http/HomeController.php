@@ -8,19 +8,17 @@ use App\Domain\Operation\OperationBackup;
 use App\Domain\Operation\OperationRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Views\PhpRenderer;
 
 class HomeController
 {
     public function __construct(
-        private readonly OperationRepository $operationRepository,
-        private readonly OperationBackup $operationDump
+        private readonly PhpRenderer $renderer
     ) {
     }
 
     public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $this->operationDump->import($_SERVER['DOCUMENT_ROOT'] . '/storage/operations.xml');
-
-        return $response;
+        return $this->renderer->render($response, 'index.php');
     }
 }

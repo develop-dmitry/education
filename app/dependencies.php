@@ -11,6 +11,7 @@ use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Views\PhpRenderer;
 
 return static function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -29,6 +30,8 @@ return static function (ContainerBuilder $containerBuilder) {
             return $logger;
         },
 
-        OperationBackup::class => DI\autowire(OperationBackupUseCase::class)
+        OperationBackup::class => DI\autowire(OperationBackupUseCase::class),
+
+        PhpRenderer::class => fn (): PhpRenderer => new PhpRenderer('../resources/views/')
     ]);
 };
