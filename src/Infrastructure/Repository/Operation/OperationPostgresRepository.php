@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Repository\Operation;
 
+use App\Domain\Operation\DTO\GetOperationRequest;
 use App\Domain\Operation\Operation;
 use App\Domain\Operation\OperationNotDeletedException;
 use App\Domain\Operation\OperationNotFoundException;
@@ -19,9 +20,10 @@ class OperationPostgresRepository extends PostgresRepository implements Operatio
 
     protected string $primaryKey = 'id';
 
-    public function findAll(): array
+    public function findAll(GetOperationRequest $request): array
     {
-        $statement = $this->query("SELECT * FROM {$this->table}");
+        $query = "SELECT * FROM {$this->table} LIMIT {$request->getLimit()} OFFSET {$request->getOffset()}";
+        $statement = $this->query($query);
 
         $result = [];
 
@@ -69,6 +71,15 @@ class OperationPostgresRepository extends PostgresRepository implements Operatio
         } catch (PDOException) {
             throw new OperationNotDeletedException('Operation could not be deleted');
         }
+    }
+
+    public function getElementCount(): int
+    {
+        $query = "SELECT COUNT(*) FROM {$this->table}";
+
+        $statement = $this->query($query)->fetch();
+
+        return $statement['count'];
     }
 
     protected function makeOperation(array $params): Operation

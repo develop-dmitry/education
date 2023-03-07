@@ -4,7 +4,7 @@
   .row-operation__column Сумма операции
   .row-operation__column Дата операции
 .row-operation(
-  :class="{componentClass, 'row-operation_disabled': isDisabled}"
+  :class="{componentClass, 'row-operation_disabled': isDisabled, 'row-operation_fake': isFake}"
   v-else
 )
   .row-operation__column {{ id }}
@@ -57,6 +57,10 @@ export default defineComponent({
     isDisabled: {
       type: Boolean,
       default: false
+    },
+    isFake: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -81,6 +85,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@keyframes blink {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 .row-operation {
   display: flex;
   justify-content: center;
@@ -88,10 +106,21 @@ export default defineComponent({
   padding: 7px 0;
   position: relative;
   transition: background-color .2s ease-in-out;
+  box-sizing: border-box;
 
   &_disabled {
     pointer-events: none;
     opacity: .8;
+  }
+
+  &_fake {
+    min-height: 32px;
+    background: #cccccc;
+    animation: blink 1s linear infinite;
+
+    &:nth-child(2n + 1) {
+      animation-delay: .5s;
+    }
   }
 
   &:hover .row-operation__delete {

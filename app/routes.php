@@ -18,6 +18,7 @@ return static function (App $app) {
                 $operation->post('/create', [OperationController::class, 'createOperation']);
                 $operation->post('/list', [OperationController::class, 'getOperations']);
                 $operation->post('/delete', [OperationController::class, 'deleteOperation']);
+                $operation->post('/count', [OperationController::class, 'getOperationCount']);
             });
         });
     });

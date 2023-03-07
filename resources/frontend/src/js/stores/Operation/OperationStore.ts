@@ -7,6 +7,8 @@ import GetOperationResponse from "./Responses/GetOperationResponse";
 import DeleteOperationRequest from "./Requests/DeleteOperationRequest";
 import DeleteOperationResponse from "./Responses/DeleteOperationResponse";
 import Operation from "../../entities/Operation";
+import GetOperationRequest from "./Requests/GetOperationRequest";
+import GetOperationCountResponse from "./Responses/GetOperationCountResponse";
 
 export const useOperationStore = defineStore('operationStore', {
     state() {
@@ -17,20 +19,21 @@ export const useOperationStore = defineStore('operationStore', {
 
     actions: {
         async createOperation(request: CreateOperationRequest): Promise<CreateOperationResponse> {
-            const body = {
+            const apiRequest = new Request('/operation/create', {
                 amount: request.amount,
                 date: request.getFormatDate()
-            }
-
-            const apiRequest = new Request('/operation/create', body);
+            });
 
             const response = await this.api.post(apiRequest);
 
             return new CreateOperationResponse(response.success, response.message ?? '');
         },
 
-        async getOperations(): Promise<GetOperationResponse> {
-            const apiRequest = new Request('/operation/list', {});
+        async getOperations(request: GetOperationRequest): Promise<GetOperationResponse> {
+            const apiRequest = new Request('/operation/list', {
+                limit: request.limit,
+                page: request.page
+            });
 
             const response = await this.api.post(apiRequest);
 
@@ -44,12 +47,19 @@ export const useOperationStore = defineStore('operationStore', {
         },
 
         async deleteOperation(request: DeleteOperationRequest): Promise<DeleteOperationResponse> {
-            const body = {id: request.id};
-            const apiRequest = new Request('/operation/delete', body);
+            const apiRequest = new Request('/operation/delete',  {id: request.id});
 
             const response = await this.api.post(apiRequest);
 
             return new DeleteOperationResponse(response.success);
+        },
+
+        async getOperationCount(): Promise<GetOperationCountResponse> {
+            const apiRequest = new Request('/operation/count', {});
+
+            const response = await this.api.post(apiRequest);
+
+            return new GetOperationCountResponse(response.success, response.count);
         }
     }
 });

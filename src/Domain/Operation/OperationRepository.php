@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Operation;
 
+use App\Domain\Operation\DTO\GetOperationRequest;
+
 interface OperationRepository
 {
     /**
      * @return Operation[]
      */
-    public function findAll(): array;
+    public function findAll(GetOperationRequest $request): array;
 
     /**
      * @throws OperationNotFoundException
@@ -25,4 +27,6 @@ interface OperationRepository
      * @throws OperationNotDeletedException
      */
     public function delete(int $id): void;
+
+    public function getElementCount(): int;
 }

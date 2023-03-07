@@ -7,6 +7,7 @@ namespace App\Infrastructure\Http;
 use App\Application\Validator\RegExp;
 use App\Application\Validator\Validator;
 use App\Application\Validator\ValidatorItem;
+use App\Domain\Operation\DTO\GetOperationRequest;
 use App\Domain\Operation\Operation;
 use App\Domain\Operation\OperationNotDeletedException;
 use App\Domain\Operation\OperationRepository;
@@ -57,7 +58,14 @@ class OperationController
     public function getOperations(Request $request, ResponseInterface $response): ResponseInterface
     {
         $result = [];
-        $operations = $this->operationRepository->findAll();
+
+        $data = $request->getParsedBody();
+
+        $operationRequest = new GetOperationRequest(
+            (isset($data['limit'])) ? (int) $data['limit'] : 10,
+            (isset($data['page'])) ? (int) $data['page'] : 1
+        );
+        $operations = $this->operationRepository->findAll($operationRequest);
 
         foreach ($operations as $operation) {
             $result[] = $operation->toArray();
@@ -90,6 +98,15 @@ class OperationController
         }
 
         $response->getBody()->write(json_encode($result));
+
+        return $response;
+    }
+
+    public function getOperationCount(Request $request, ResponseInterface $response): ResponseInterface
+    {
+        $count = $this->operationRepository->getElementCount();
+
+        $response->getBody()->write(json_encode(['success' => true, 'count' => $count]));
 
         return $response;
     }
